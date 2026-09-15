@@ -1,0 +1,26 @@
+{
+  "name": "nexusgraph-enterprise",
+  "version": "1.0.0",
+  "description": "Enterprise Semantic Knowledge Graph & Multi-Hop Reasoning Fabric for Galuxium Nexus V2",
+  "main": "src/knowledge_graph_engine.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test/verify_nexusgraph.js",
+    "start": "node test/verify_nexusgraph.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "knowledge-graph",
+    "graphrag",
+    "enterprise",
+    "multi-hop",
+    "neo4j",
+    "vector-search",
+    "provenance"
+  ],
+  "author": "Antigravity Builder",
+  "license": "MIT"
+}

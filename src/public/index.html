@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusGraph Enterprise — GraphRAG & Multi-Hop Reasoning</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Navigation -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-400 flex items-center justify-center text-slate-950 shadow-lg shadow-indigo-500/20">
+          <i class="fa-solid fa-diagram-project text-lg font-black"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-lg tracking-tight">NexusGraph Enterprise</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/40">GALUXIUM NEXUS V2</span>
+          </div>
+          <p class="text-xs text-slate-400">Enterprise GraphRAG & Weighted Reciprocal Rank Fusion (WRRF)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <span class="text-xs text-slate-400">Reasoning Engine:</span>
+        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200">WRRF (k=60) Hybrid</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left: Interactive Topology Visualizer (7 cols) -->
+    <div class="lg:col-span-7 space-y-4">
+      <div class="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
+            <i class="fa-solid fa-circle-nodes text-indigo-400"></i>
+            <span>Cross-Platform Knowledge Graph</span>
+          </span>
+          <span class="text-[10px] font-mono text-emerald-400">4 Enterprise Nodes • 3 Directed Hops</span>
+        </div>
+
+        <!-- SVG Topology Graph Canvas -->
+        <div class="w-full aspect-[16/10] bg-slate-950 border border-slate-800 rounded-2xl relative overflow-hidden p-4 select-none shadow-2xl flex items-center justify-center">
+          <svg class="w-full h-full" viewBox="0 0 800 450">
+            <defs>
+              <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="28" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#6366f1"></polygon>
+              </marker>
+            </defs>
+
+            <!-- Directed Edges -->
+            <line x1="120" y1="225" x2="320" y2="120" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowhead)"></line>
+            <text x="210" y="160" fill="#818cf8" font-size="9" font-family="monospace">AFFECTED_SERVICE</text>
+
+            <line x1="320" y1="120" x2="520" y2="225" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowhead)"></line>
+            <text x="400" y="160" fill="#818cf8" font-size="9" font-family="monospace">MODIFIED_BY_PR</text>
+
+            <line x1="520" y1="225" x2="700" y2="225" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowhead)"></line>
+            <text x="590" y="210" fill="#818cf8" font-size="9" font-family="monospace">AUTHORED_BY</text>
+
+            <!-- Node 1: Jira Incident -->
+            <g class="cursor-pointer">
+              <circle cx="120" cy="225" r="28" fill="#1e1b4b" stroke="#ef4444" stroke-width="2"></circle>
+              <text x="120" y="222" text-anchor="middle" fill="#f87171" font-size="10" font-weight="bold">INC-902</text>
+              <text x="120" y="236" text-anchor="middle" fill="#94a3b8" font-size="8">Jira Alert</text>
+            </g>
+
+            <!-- Node 2: Service -->
+            <g class="cursor-pointer">
+              <circle cx="320" cy="120" r="28" fill="#1e1b4b" stroke="#3b82f6" stroke-width="2"></circle>
+              <text x="320" y="117" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="bold">Checkout</text>
+              <text x="320" y="131" text-anchor="middle" fill="#94a3b8" font-size="8">Datadog</text>
+            </g>
+
+            <!-- Node 3: Deployment PR -->
+            <g class="cursor-pointer">
+              <circle cx="520" cy="225" r="28" fill="#1e1b4b" stroke="#a855f7" stroke-width="2"></circle>
+              <text x="520" y="222" text-anchor="middle" fill="#c084fc" font-size="10" font-weight="bold">PR-1082</text>
+              <text x="520" y="236" text-anchor="middle" fill="#94a3b8" font-size="8">GitHub</text>
+            </g>
+
+            <!-- Node 4: Person -->
+            <g class="cursor-pointer">
+              <circle cx="700" cy="225" r="28" fill="#1e1b4b" stroke="#10b981" stroke-width="2"></circle>
+              <text x="700" y="222" text-anchor="middle" fill="#34d399" font-size="10" font-weight="bold">Elena V.</text>
+              <text x="700" y="236" text-anchor="middle" fill="#94a3b8" font-size="8">Platform</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Query Input -->
+        <div class="flex items-center space-x-2 pt-2">
+          <input id="ragQueryInput" type="text" value="Who authored the deployment that triggered the INC-902 checkout outage?" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+          <button id="btnRunQuery" class="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:opacity-90 text-white font-bold text-xs transition flex items-center space-x-2 shadow-lg shadow-indigo-500/20">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Synthesize Answer</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Verified Lineage & WRRF Ranking (5 cols) -->
+    <div class="lg:col-span-5 space-y-6">
+
+      <!-- Synthesized Answer & Lineage -->
+      <div class="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+          <span>Zero-Hallucination Lineage Provenance</span>
+        </h3>
+
+        <div id="answerCard" class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-xs text-slate-200 leading-relaxed space-y-2">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- Citations list -->
+        <div id="citationsList" class="space-y-1.5 text-[11px]">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- WRRF Re-Ranking Scores Table -->
+      <div class="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-3">
+        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
+          <i class="fa-solid fa-ranking-star text-amber-400"></i>
+          <span>Weighted Reciprocal Rank Fusion (WRRF)</span>
+        </h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="text-slate-500 border-b border-slate-800 text-[10px]">
+                <th class="pb-2">Entity</th>
+                <th class="pb-2">Vector</th>
+                <th class="pb-2">Graph</th>
+                <th class="pb-2">WRRF Score</th>
+              </tr>
+            </thead>
+            <tbody id="wrrfTableBody" class="font-mono text-[11px] text-slate-300">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('btnRunQuery').onclick = async () => {
+      const query = document.getElementById('ragQueryInput').value;
+      const res = await fetch('/api/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+      const data = await res.json();
+      renderResults(data);
+    };
+
+    function renderResults(data) {
+      const answerCard = document.getElementById('answerCard');
+      answerCard.innerHTML = `
+        <p class="font-medium text-slate-200">${data.answer}</p>
+        <div class="pt-2 border-t border-slate-800/80 text-[11px] font-mono text-indigo-300">
+          <strong>Lineage Chain:</strong><br>${data.lineageChain}
+        </div>
+      `;
+
+      const citationsList = document.getElementById('citationsList');
+      citationsList.innerHTML = data.citations.map(c => `
+        <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
+          <span class="font-bold text-slate-300">${c.entityName}</span>
+          <span class="text-[10px] text-indigo-400 font-mono">${c.system} • ${c.refId}</span>
+        </div>
+      `).join('');
+
+      const tableBody = document.getElementById('wrrfTableBody');
+      tableBody.innerHTML = data.candidatesScored.map(cand => `
+        <tr class="border-b border-slate-800/40 hover:bg-slate-800/30">
+          <td class="py-2 font-sans font-semibold text-white">${cand.node.name}</td>
+          <td class="py-2 text-slate-400">#${cand.vectorRank}</td>
+          <td class="py-2 text-slate-400">#${cand.graphRank}</td>
+          <td class="py-2 text-emerald-400 font-bold">${cand.wrrfScore}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Trigger initial query on load
+    document.getElementById('btnRunQuery').click();
+  </script>
+</body>
+</html>

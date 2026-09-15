@@ -2,7 +2,7 @@ import assert from 'assert';
 import { KnowledgeGraphEngine } from '../src/knowledge_graph_engine.js';
 import { HybridGraphRAG } from '../src/hybrid_graph_rag.js';
 
-console.log('🧪 Starting NexusGraph Automated Verification Suite (Galuxium Nexus V2)...\n');
+console.log('🧪 Starting NexusGraph Automated Verification Suite (Galuxium Nexus V2 2026)...\n');
 
 const graph = new KnowledgeGraphEngine();
 const rag = new HybridGraphRAG(graph);
@@ -58,20 +58,28 @@ const path = discoveredPaths[0];
 assert(path.length === 4, 'Path must traverse 4 nodes (3 hops)');
 assert(path[path.length - 1].name === 'Elena Vance', 'End of path must be Elena Vance');
 console.log('   ✅ Multi-Hop Path Discovered:');
-console.log('      ' + path.map(p => p.name).join(' -> '));
-
-// 4. Hybrid GraphRAG Query Synthesis
-console.log('4️⃣ Testing Natural Language Hybrid GraphRAG Query Engine...');
-const queryResult = rag.query('Who is the person responsible for the deployment causing the checkout latency incident?');
-assert(queryResult.hopsCount === 3, 'Must calculate 3 hops of provenance');
-assert(queryResult.targetEntity === 'Elena Vance', 'Must resolve to Elena Vance');
-assert(queryResult.citations.length === 4, 'Must produce 4 provenance citations');
-
-console.log('   💬 Query:', queryResult.query);
-console.log('   🤖 Synthesized Answer:', queryResult.answer);
-console.log('   📜 Citations:');
-for (const cite of queryResult.citations) {
-  console.log(`      • [${cite.system}] ${cite.refId} -> ${cite.entityName}`);
+for (let i = 0; i < path.length; i++) {
+  const step = path[i];
+  console.log(`      Node ${i + 1}: [${step.type}] ${step.name} (Source: ${step.sourceOrigin.system})`);
 }
 
-console.log('\n🎉 ALL NEXUSGRAPH & GALUXIUM NEXUS V2 TESTS PASSED WITH 100% SUCCESS!\n');
+// 4. Hybrid GraphRAG Query Synthesis
+console.log('4️⃣ Testing Natural Language Hybrid GraphRAG Synthesis...');
+const queryResult = rag.query('Who authored the deployment that triggered the INC-902 checkout outage?');
+assert(queryResult.targetEntity === 'Elena Vance', 'Must identify Elena Vance');
+assert(queryResult.hopsCount === 3, 'Must resolve across 3 hops');
+assert(queryResult.citations.length === 4, 'Must provide 4 verifiable citations');
+console.log('   💬 GraphRAG Answer:', queryResult.answer);
+console.log('   🔗 Lineage Chain:', queryResult.lineageChain);
+
+// 5. Weighted Reciprocal Rank Fusion (WRRF) Verification
+console.log('5️⃣ Testing Weighted Reciprocal Rank Fusion (WRRF) Ranking...');
+assert(queryResult.topRankedWRRF !== undefined, 'Must output top-ranked WRRF candidate');
+assert(queryResult.topRankedWRRF.wrrfScore > 0, 'WRRF score must be positive');
+console.log(`   📊 Top Ranked WRRF Entity: ${queryResult.topRankedWRRF.node.name} (Score: ${queryResult.topRankedWRRF.wrrfScore})`);
+console.log('   📋 Candidate Scores:');
+for (const cand of queryResult.candidatesScored) {
+  console.log(`      • ${cand.node.name}: VectorRank #${cand.vectorRank}, GraphRank #${cand.graphRank} -> WRRF: ${cand.wrrfScore}`);
+}
+
+console.log('\n🎉 ALL 5 NEXUSGRAPH ENTERPRISE & GRAPHRAG TESTS PASSED WITH 100% SUCCESS!\n');

@@ -7,3 +7,5 @@ build/
 coverage/
 data/
 *.db
+
+*.tsbuildinfo

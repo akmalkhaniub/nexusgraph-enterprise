@@ -1,6 +1,8 @@
 # Technical Specification: NexusGraph
 **Project Name:** NexusGraph (Galuxium Nexus V2)  
-**Status:** Ready for Implementation  
+**Status:** Prototype implemented — spec is target design (updated 2026-09-18)  
+
+> **Implementation status (2026-09-18):** The sections below describe the *target* architecture. Built: a real hybrid vector + breadth-first graph-traversal retriever (WRRF scoring) over an in-memory knowledge graph (328 LOC, 5 passing tests). Not yet built: real enterprise connectors (Slack/Jira/Notion), LLM entity extraction, persistent Neo4j/pgvector stores, and the Next.js/Three.js graph canvas (currently static HTML). Ingestion is mocked.
 **Version:** 1.0.0  
 
 ---

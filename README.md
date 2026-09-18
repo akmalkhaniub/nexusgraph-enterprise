@@ -1,6 +1,7 @@
 # 🕸️ NexusGraph Enterprise — Hybrid GraphRAG Knowledge Mesh
 
 [![Galuxium Nexus V2](https://img.shields.io/badge/Galuxium_Nexus-V2_Hackathon-6366f1.svg)](https://galuxium.com/)
+[![TypeScript: strict](https://img.shields.io/badge/TypeScript-strict-3178c6.svg)](https://www.typescriptlang.org)
 [![GraphRAG](https://img.shields.io/badge/Architecture-Hybrid_GraphRAG_2026-blue.svg)](https://github.com/microsoft/graphrag)
 [![Fusion Algorithm](https://img.shields.io/badge/Ranking-WRRF_k%3D60-teal.svg)](#hybrid-graphrag--wrrf-fusion-engine)
 [![Multi-Hop Lineage](https://img.shields.io/badge/Graph_Traversal-3--Hop_Root_Cause-purple.svg)](#multi-hop-traversal)

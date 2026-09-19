@@ -20,13 +20,15 @@
     "docker:compose": "docker compose up -d",
     "tunnel": "powershell -ExecutionPolicy Bypass -File deploy/free/tunnel.ps1",
     "test:eval": "tsx test/eval.test.ts",
-    "eval": "tsx src/eval.ts"
+    "eval": "tsx src/eval.ts",
+    "coverage": "c8 sh -c \"tsx test/verify_nexusgraph.ts && tsx test/eval.test.ts && tsx test/server_integration.ts\""
   },
   "dependencies": {
     "dotenv": "^16.6.1"
   },
   "devDependencies": {
     "@types/node": "^22.20.3",
+    "c8": "^10.1.3",
     "tsx": "^4.23.13",
     "typescript": "^5.9.3"
   },

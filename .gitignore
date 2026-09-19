@@ -9,3 +9,6 @@ data/
 *.db
 
 *.tsbuildinfo
+
+coverage/
+.nyc_output/

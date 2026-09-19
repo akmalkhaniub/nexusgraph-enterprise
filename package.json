@@ -12,13 +12,15 @@
     "typecheck": "tsc -p tsconfig.test.json",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
-    "test": "npm run typecheck && tsx test/verify_nexusgraph.ts && tsx test/server_integration.ts",
+    "test": "npm run typecheck && tsx test/verify_nexusgraph.ts && tsx test/eval.test.ts && tsx test/server_integration.ts",
     "test:unit": "tsx test/verify_nexusgraph.ts",
     "test:integration": "tsx test/server_integration.ts",
     "docker:build": "docker build -t nexusgraph-enterprise:latest .",
     "docker:run": "docker run -d -p 3006:3006 --name nexusgraph-enterprise nexusgraph-enterprise:latest",
     "docker:compose": "docker compose up -d",
-    "tunnel": "powershell -ExecutionPolicy Bypass -File deploy/free/tunnel.ps1"
+    "tunnel": "powershell -ExecutionPolicy Bypass -File deploy/free/tunnel.ps1",
+    "test:eval": "tsx test/eval.test.ts",
+    "eval": "tsx src/eval.ts"
   },
   "dependencies": {
     "dotenv": "^16.6.1"

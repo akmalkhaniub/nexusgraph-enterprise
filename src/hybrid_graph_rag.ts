@@ -50,7 +50,9 @@ export class HybridGraphRAG {
     this.graphWeight = options.graphWeight || 0.55;
   }
 
-  /** Simple lexical/semantic pseudo-embedding similarity (Jaccard over tokens). */
+  private _idf: Map<string, number> | null = null;
+
+  /** Simple lexical/semantic pseudo-embedding similarity (Jaccard over tokens). Kept for reference. */
   computeSemanticSimilarity(textA: string, textB: string): number {
     const wordsA = new Set(textA.toLowerCase().split(/\W+/).filter(Boolean));
     const wordsB = new Set(textB.toLowerCase().split(/\W+/).filter(Boolean));
@@ -58,6 +60,47 @@ export class HybridGraphRAG {
     for (const w of wordsA) if (wordsB.has(w)) intersection++;
     const union = new Set([...wordsA, ...wordsB]).size;
     return union === 0 ? 0 : intersection / union;
+  }
+
+  private tokenize(text: string): string[] {
+    return text.toLowerCase().split(/\W+/).filter(Boolean);
+  }
+
+  /** Build inverse-document-frequency over the node corpus so rare terms weigh more. */
+  buildIdf(): Map<string, number> {
+    const docs = Array.from(this.graph.nodes.values()).map(
+      (n) => `${n.name} ${n.type} ${JSON.stringify(n.attributes || {})}`
+    );
+    const df = new Map<string, number>();
+    for (const doc of docs) {
+      for (const tok of new Set(this.tokenize(doc))) df.set(tok, (df.get(tok) || 0) + 1);
+    }
+    const n = Math.max(1, docs.length);
+    const idf = new Map<string, number>();
+    for (const [tok, d] of df) idf.set(tok, Math.log((1 + n) / (1 + d)) + 1);
+    this._idf = idf;
+    return idf;
+  }
+
+  private tfidfVector(text: string): Map<string, number> {
+    const idf = this._idf ?? this.buildIdf();
+    const tokens = this.tokenize(text);
+    const tf = new Map<string, number>();
+    for (const t of tokens) tf.set(t, (tf.get(t) || 0) + 1);
+    const vec = new Map<string, number>();
+    for (const [t, f] of tf) vec.set(t, (f / tokens.length) * (idf.get(t) ?? Math.log(1 + this.graph.nodes.size) + 1));
+    return vec;
+  }
+
+  /** TF-IDF cosine similarity between a query and a document (0..1). */
+  tfidfCosine(query: string, docText: string): number {
+    const a = this.tfidfVector(query);
+    const b = this.tfidfVector(docText);
+    let dot = 0;
+    for (const [t, av] of a) if (b.has(t)) dot += av * (b.get(t) as number);
+    const na = Math.sqrt(Array.from(a.values()).reduce((s, v) => s + v * v, 0));
+    const nb = Math.sqrt(Array.from(b.values()).reduce((s, v) => s + v * v, 0));
+    return na === 0 || nb === 0 ? 0 : dot / (na * nb);
   }
 
   /** Execute Hybrid GraphRAG search with WRRF re-ranking. */

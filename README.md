@@ -109,7 +109,7 @@ npm test
 ```bash
 node src/server.js
 ```
-Open **`http://localhost:3005`** in your browser to interact with the enterprise console:
+Open **`http://localhost:3006`** in your browser to interact with the enterprise console:
 - Query: *"What caused incident INC-902 and who can deploy the hotfix?"*
 - View the real-time visual topological graph across Jira, Datadog, GitHub, and Slack nodes.
 - Inspect the mathematical WRRF rank fusion breakdown table comparing Vector vs. Graph scores.

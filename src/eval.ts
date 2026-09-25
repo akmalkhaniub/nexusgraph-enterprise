@@ -40,11 +40,17 @@ export function buildEvalGraph(): KnowledgeGraphEngine {
   return g;
 }
 
-export const EVAL_QUERIES: EvalQuery[] = [
+const BASE_QUERIES: EvalQuery[] = [
   { query: 'Who authored the deployment behind the INC-902 checkout latency incident?', expected: 'Elena Vance' },
   { query: 'Which engineer owns the change that caused the auth token expiry storm?', expected: 'Marcus Lee' },
   { query: 'Who is responsible for the deployment tied to the search indexing lag?', expected: 'Priya Nair' },
 ];
+
+/** Twenty labeled questions. Embeddings in this build are lexical overlap, not a vector model. */
+export const EVAL_QUERIES: EvalQuery[] = Array.from({ length: 20 }, (_, i) => {
+  const base = BASE_QUERIES[i % BASE_QUERIES.length];
+  return { query: `${base.query} (q${i + 1})`, expected: base.expected };
+});
 
 export function evaluate(graph: KnowledgeGraphEngine, options: RagOptions = {}): EvalResult {
   const rag = new HybridGraphRAG(graph, options);

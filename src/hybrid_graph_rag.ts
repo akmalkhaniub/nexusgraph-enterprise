@@ -107,11 +107,14 @@ export class HybridGraphRAG {
   query(query: string): RagResult {
     const q = query.toLowerCase();
 
-    // 1. Vector Candidate Retrieval
+    // 1. Vector Candidate Retrieval — TF-IDF cosine (rare terms weigh more than
+    //    plain Jaccard overlap). Rebuild IDF each query so a mutated graph is reflected.
+    this._idf = null;
+    this.buildIdf();
     const vectorCandidates = Array.from(this.graph.nodes.values())
       .map((node) => {
         const textToMatch = `${node.name} ${node.type} ${JSON.stringify(node.attributes || {})}`;
-        return { node, sim: this.computeSemanticSimilarity(query, textToMatch) };
+        return { node, sim: this.tfidfCosine(query, textToMatch) };
       })
       .sort((a, b) => b.sim - a.sim);
 

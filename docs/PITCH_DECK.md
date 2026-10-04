@@ -89,9 +89,9 @@ $$\text{Score}(d) = \frac{w_{\text{vec}}}{60 + r_{\text{vec}}(d)} + \frac{w_{\te
 
 | Evaluation Metric | Naive Vector RAG | NexusGraph Hybrid GraphRAG | Impact |
 | :--- | :--- | :--- | :--- |
-| **Multi-Hop Traversal Accuracy**| 18.2% (Severe Guessing) | **100% (Deterministic BFS)** | **5.5x Accuracy Gain** |
+| **Multi-Hop Answer Accuracy** | — | **100% (deterministic BFS traversal)** | measured on the labeled eval (`npm run eval`) |
 | **Hallucination Rate** | 34.5% during Outages | **0.0% (Verified Lineage)** | **Zero Hallucination** |
-| **Triage Time-to-Root-Cause** | 45 – 90 Minutes | **< 3 Seconds** | **96% Faster MTTR** |
+| **Triage Time-to-Root-Cause** | 45–90 min _(illustrative industry baseline)_ | **< 3 Seconds** _(in-memory)_ | illustrative, not a measured A/B |
 | **Silo Unification** | Text-Only Search | Jira + Datadog + GitHub + Slack | **True Enterprise Mesh** |
 | **Audit Traceability** | None (Black Box) | Cryptographic Edge Proof | **100% OSHA/SOC2 Compliant** |
 

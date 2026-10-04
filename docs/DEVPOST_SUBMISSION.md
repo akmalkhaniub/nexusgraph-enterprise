@@ -32,7 +32,7 @@ NexusGraph Enterprise solves the enterprise knowledge fragmentation crisis by im
 | Server integration suite driving the real HTTP loop | `test/server_integration.ts` | `npm run test:integration` |
 | TypeScript strict, **91% coverage**, CI on Node 18/20/22 | `.c8rc.json`, `ci/ci.workflow.yml` | `npm run coverage` |
 
-> Honesty note: retrieval runs over an in-memory graph seeded with a synthetic enterprise topology; live connectors (Jira/Slack/GitHub) and a persistent Neo4j/pgvector store are the target production stack, not wired in this build. No deployed endpoint.
+> Honesty note: retrieval runs over an in-memory graph seeded with a synthetic enterprise topology; live connectors (Jira/Slack/GitHub) and a persistent Neo4j/pgvector store are the target production stack, not wired in this build. The embeddings here are **lexical-overlap vectors, not a trained vector model**, and the hybrid-vs-vector-only ablation reaches the **same accuracy (1.0)** on this topology — the multi-hop graph traversal is what resolves the answer, while WRRF fusion adds candidate ranking and provenance. No deployed endpoint.
 
 ## 🔍 Inspiration
 Engineering organizations spend up to 22% of their productive sprint hours digging through disconnected enterprise SaaS platforms:
@@ -131,7 +131,7 @@ We asked: **What if we could fuse dense vector search with mathematical graph tr
 ## 🏆 Accomplishments We're Proud Of
 
 - **100% Automated Test Suite (5/5 Tests Passing)**: Validating node ingestion, typed edge creation, 3-hop BFS traversals, natural language GraphRAG synthesis, and WRRF mathematical scoring.
-- **5.5x Multi-Hop Accuracy Increase**: Eliminating vector hallucination and cutting triage time from 90 minutes to under 3 seconds.
+- **Deterministic multi-hop provenance**: graph traversal resolves incident → service → deployment → author with **answer accuracy 1.0** on the labeled eval, returning a *verifiable path* rather than a generated guess. *(The hybrid-vs-vector ablation reaches the same accuracy — the traversal drives correctness; WRRF fusion contributes ranking and provenance. The "~90 minutes → seconds" triage comparison is an illustrative industry framing, not a measured benchmark.)*
 - **Complete Submission Asset Suite**: 16:9 presentation deck, high-resolution cinematic hero graphic, and structured 3-minute video script.
 
 ---

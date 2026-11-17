@@ -44,6 +44,14 @@ export function createNexusGraphServer(): { server: http.Server; graph: Knowledg
   graph.addEdge('jira_inc_902', 'svc_checkout', 'AFFECTED_SERVICE');
   graph.addEdge('svc_checkout', 'gh_pr_1082', 'MODIFIED_BY_DEPLOYMENT');
   graph.addEdge('gh_pr_1082', 'usr_elena', 'AUTHORED_BY');
+  // Shares "checkout" with INC-902 so the console can show the walk picking the rarer incident.
+  graph.addNode({ id: 'jira_inc_219', type: 'INCIDENT', name: 'INC-219: Checkout cache stampede', sourceOrigin: { system: 'Jira Service Management', externalId: 'INC-219' } });
+  graph.addNode({ id: 'svc_billing', type: 'SERVICE', name: 'Billing Service', sourceOrigin: { system: 'Datadog Service Catalog', externalId: 'billing-v1' } });
+  graph.addNode({ id: 'gh_pr_3301', type: 'DEPLOYMENT', name: 'PR-3301 tax table', sourceOrigin: { system: 'GitHub', externalId: 'pull/3301' } });
+  graph.addNode({ id: 'usr_sam', type: 'PERSON', name: 'Sam Ortiz', sourceOrigin: { system: 'Workday / Slack', externalId: 'U091C11' } });
+  graph.addEdge('jira_inc_219', 'svc_billing', 'AFFECTED_SERVICE');
+  graph.addEdge('svc_billing', 'gh_pr_3301', 'MODIFIED_BY_DEPLOYMENT');
+  graph.addEdge('gh_pr_3301', 'usr_sam', 'AUTHORED_BY');
 
   const server = http.createServer(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');

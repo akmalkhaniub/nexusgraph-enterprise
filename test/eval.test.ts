@@ -14,10 +14,8 @@ const res = evaluate(g);
 console.log('   metrics:', res);
 
 ok('eval covers all labeled queries', res.n === EVAL_QUERIES.length);
-ok('answer accuracy is perfect on the labeled multi-hop set (1.0)', res.accuracy === 1.0);
-// The answer entity is the deepest node in a 3-hop chain, so it ranks below the seed
-// in WRRF — hit-rate@3 is expected to be low; we assert it is measured, not perfect.
-ok('hit-rate@3 is measured in [0,1]', res.hitRateAt3 >= 0 && res.hitRateAt3 <= 1);
+ok('answer accuracy is perfect on the distinct labeled set (1.0)', res.accuracy === 1.0);
+ok('the resolved entity is in the top 3 (hit-rate@3 is 1.0)', res.hitRateAt3 === 1.0);
 ok('MRR in (0,1]', res.mrr > 0 && res.mrr <= 1);
 
 const { hybrid, vectorOnly } = ablation();

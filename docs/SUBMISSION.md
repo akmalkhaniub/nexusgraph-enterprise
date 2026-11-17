@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3006. Retrieval is lexical overlap plus graph traversal on the built-in graph. `src/eval.ts` scores 20 questions on that graph. Embeddings are not a hosted vector model.
+Open http://localhost:3006. Retrieval is TF-IDF cosine plus graph traversal on the built-in graph. `src/eval.ts` scores 20 distinct questions, including a second checkout incident that shares a word with the first. Embeddings are not a hosted vector model.
 
 ## Not in this submission
 

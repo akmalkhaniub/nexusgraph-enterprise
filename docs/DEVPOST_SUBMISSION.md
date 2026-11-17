@@ -32,7 +32,7 @@ NexusGraph Enterprise solves the enterprise knowledge fragmentation crisis by im
 | Server integration suite driving the real HTTP loop | `test/server_integration.ts` | `npm run test:integration` |
 | TypeScript strict, **91% coverage**, CI on Node 18/20/22 | `.c8rc.json`, `ci/ci.workflow.yml` | `npm run coverage` |
 
-> Honesty note: retrieval runs over an in-memory graph seeded with a synthetic enterprise topology; live connectors (Jira/Slack/GitHub) and a persistent Neo4j/pgvector store are the target production stack, not wired in this build. The embeddings here are **lexical-overlap vectors, not a trained vector model**, and the hybrid-vs-vector-only ablation reaches the **same accuracy (1.0)** on this topology — the multi-hop graph traversal is what resolves the answer, while WRRF fusion adds candidate ranking and provenance. No deployed endpoint.
+> Honesty note: retrieval runs over an in-memory graph seeded with a synthetic enterprise topology; live connectors (Jira/Slack/GitHub) and a persistent Neo4j/pgvector store are the target production stack, not wired in this build. Similarity is **TF-IDF cosine, not a hosted embedding model**. The labeled set has 20 distinct questions and a second checkout incident that shares a word with the first. No deployed endpoint.
 
 ## 🔍 Inspiration
 Engineering organizations spend up to 22% of their productive sprint hours digging through disconnected enterprise SaaS platforms:

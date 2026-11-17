@@ -45,9 +45,11 @@ export class HybridGraphRAG {
 
   constructor(graphEngine: KnowledgeGraphEngine, options: RagOptions = {}) {
     this.graph = graphEngine;
-    this.wrrfK = options.wrrfK || 60;
-    this.vectorWeight = options.vectorWeight || 0.45;
-    this.graphWeight = options.graphWeight || 0.55;
+    // k=1 and a heavier graph weight keep the node the walk selected ahead of a
+    // lexical neighbor. k=60 flattened every rank on a graph this small.
+    this.wrrfK = options.wrrfK ?? 1;
+    this.vectorWeight = options.vectorWeight ?? 0.2;
+    this.graphWeight = options.graphWeight ?? 0.8;
   }
 
   private _idf: Map<string, number> | null = null;
@@ -118,38 +120,58 @@ export class HybridGraphRAG {
       })
       .sort((a, b) => b.sim - a.sim);
 
-    // 2. Identify root seed node
-    let seedNode: GraphNode | undefined = vectorCandidates[0]?.node;
-    if (!seedNode || vectorCandidates[0]?.sim === 0) {
-      seedNode =
-        Array.from(this.graph.nodes.values()).find((n) => n.type === 'INCIDENT') ||
-        Array.from(this.graph.nodes.values())[0];
-    }
-
-    // 3. Determine target entity type
+    // 2. Decide what kind of node answers the question.
     let targetType: NodeType = 'PERSON';
     if (q.includes('who') || q.includes('person') || q.includes('author') || q.includes('owner') || q.includes('engineer')) {
       targetType = 'PERSON';
-    } else if (q.includes('deployment') || q.includes('commit') || q.includes('pr')) {
+    } else if (q.includes('deployment') || q.includes('commit') || q.includes('pr') || q.includes('pull request')) {
       targetType = 'DEPLOYMENT';
     } else if (q.includes('service') || q.includes('component')) {
       targetType = 'SERVICE';
     }
 
+    const upstream: Record<string, string[]> = {
+      PERSON: ['INCIDENT', 'SERVICE', 'DEPLOYMENT'],
+      SERVICE: ['INCIDENT'],
+      DEPLOYMENT: ['INCIDENT', 'SERVICE'],
+    };
+    const top = vectorCandidates[0];
+    const secondSim = vectorCandidates[1]?.sim ?? 0;
+    const directHit = Boolean(top && top.sim > 0 && top.node.type === targetType && top.sim > secondSim);
+
+    // 3. Seed the walk at the best upstream node that can reach the answer type.
+    const allowed = upstream[targetType] ?? ['INCIDENT'];
+    const seedPool = vectorCandidates.filter((c) => c.sim > 0 && allowed.includes(c.node.type));
+    let seedNode: GraphNode = (seedPool[0] ?? top)?.node
+      ?? Array.from(this.graph.nodes.values())[0];
+    let paths: PathStep[][] = [];
+    if (!directHit) {
+      for (const cand of seedPool) {
+        const found = this.graph.findMultiHopPaths(cand.node.id, targetType, 3);
+        if (found.length) {
+          seedNode = cand.node;
+          paths = found;
+          break;
+        }
+      }
+    }
+
     // 4. Multi-Hop Graph Traversal
-    const paths = this.graph.findMultiHopPaths(seedNode.id, targetType, 3);
-    const bestPath: Array<GraphNode | PathStep> = paths.length > 0 ? paths[0] : [seedNode];
+    const bestPath: Array<GraphNode | PathStep> = directHit
+      ? [top.node]
+      : paths.length > 0 ? paths[0] : [seedNode];
     const targetEntity = bestPath[bestPath.length - 1];
 
     // 5. Weighted Reciprocal Rank Fusion (WRRF) scoring
     const candidatesScored: ScoredCandidate[] = Array.from(this.graph.nodes.values())
       .map((node) => {
         const vectorRank = vectorCandidates.findIndex((c) => c.node.id === node.id) + 1;
+        const targetId = targetEntity.id;
         let graphDistance = 999;
-        if (node.id === seedNode!.id) graphDistance = 1;
+        if (node.id === targetId) graphDistance = 1;
         else {
           const inPathIdx = bestPath.findIndex((p) => p.id === node.id);
-          if (inPathIdx >= 0) graphDistance = inPathIdx + 1;
+          if (inPathIdx >= 0) graphDistance = Math.max(2, bestPath.length - inPathIdx);
         }
         const graphRank = graphDistance;
         const vectorScore = this.vectorWeight / (this.wrrfK + vectorRank);

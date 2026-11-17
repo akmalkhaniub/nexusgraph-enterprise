@@ -23,18 +23,20 @@ try {
   console.log('1️⃣ Health & startup...');
   const health = await get('/api/health');
   ok('server boots and /api/health returns 200', health.status === 200);
-  ok('four nodes seeded at startup', health.body.nodeCount === 4);
+  ok('eight nodes seeded at startup', health.body.nodeCount === 8);
 
   console.log('\n2️⃣ Graph endpoint...');
   const g = await get('/api/graph');
-  ok('/api/graph returns 4 nodes', Array.isArray(g.body.nodes) && g.body.nodes.length === 4);
-  ok('/api/graph returns 3 edges', Array.isArray(g.body.edges) && g.body.edges.length === 3);
+  ok('/api/graph returns 8 nodes', Array.isArray(g.body.nodes) && g.body.nodes.length === 8);
+  ok('/api/graph returns 6 edges', Array.isArray(g.body.edges) && g.body.edges.length === 6);
 
   console.log('\n3️⃣ GraphRAG query...');
   const q = await post('/api/query', { query: 'Who authored the deployment behind INC-902?' });
   ok('query returns 200', q.status === 200);
   ok('resolves to Elena Vance', q.body.targetEntity === 'Elena Vance');
   ok('reports 3 hops', q.body.hopsCount === 3);
+  const distractor = await post('/api/query', { query: 'Who authored the tax table change behind the checkout cache stampede?' });
+  ok('the other checkout incident resolves to Sam Ortiz', distractor.body.targetEntity === 'Sam Ortiz');
   ok('missing query -> 400', (await post('/api/query', {})).status === 400);
 
   console.log('\n4️⃣ Security guards...');
